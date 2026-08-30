@@ -59,9 +59,10 @@ namespace Harness
             };
             model.ShadowedOverrides = new ObservableCollection<ShadowedOverride>
             {
-                new ShadowedOverride { Key = "GlyphBrush", Value = "#7E55AEFF", Scope = "resource override" },
-                new ShadowedOverride { Key = "TextBrushDark", Value = "#000000", Scope = "resource override" },
-                new ShadowedOverride { Key = "FontFamily", Value = "Segoe UI", Scope = "theme option" }
+                new ShadowedOverride { Key = "GlyphBrush", Value = "#7E55AEFF", Scope = "resource override", Reason = "masks the preset's GlyphColor" },
+                new ShadowedOverride { Key = "ButtonBackgroundBrush", Value = "#00FFFFFF", Scope = "resource override", Reason = "the preset supplies this key" },
+                new ShadowedOverride { Key = "NegativeRatingBrush", Value = "#FF6B6B", Scope = "resource override", Reason = "identical to the theme default: no effect" },
+                new ShadowedOverride { Key = "FontFamily", Value = "Segoe UI", Scope = "theme option", Reason = "the preset supplies this key" }
             };
 
             model.ResourceSummary = "3 / 24";

@@ -61,10 +61,13 @@
     <sys:String x:Key="LOCThemeForgeMissingExtensionsHeader">The theme asks for these add-ons, which are not installed:</sys:String>
     <sys:String x:Key="LOCThemeForgeMissingExtensionsNone">Every add-on this theme asks for is installed.</sys:String>
     <sys:String x:Key="LOCThemeForgeUnresolvedKeysHeader">The theme declares these options but nothing in the running window answers to them:</sys:String>
-    <sys:String x:Key="LOCThemeForgeShadowedHeader">These customizations sit on top of the selected presets, so the presets cannot take effect for those keys:</sys:String>
-    <sys:String x:Key="LOCThemeForgeShadowedHint">A single-key override outranks a preset. When switching presets appears to do nothing, these leftovers are usually why (most often imported from ThemeModifier). Clearing them hands the keys back to the presets and leaves the rest of your customizations alone.</sys:String>
+    <sys:String x:Key="LOCThemeForgeShadowedHeader">These customizations need a second look: they either outrank the selected presets or do nothing at all:</sys:String>
+    <sys:String x:Key="LOCThemeForgeShadowedHint">A single-key override outranks a preset, and overriding a brush also outranks the palette colour the preset actually ships, so "switching presets does nothing" usually comes down to these leftovers (most often imported from ThemeModifier). The last column says which case it is. Clearing them hands the keys back to the presets and leaves the rest of your customizations alone.</sys:String>
     <sys:String x:Key="LOCThemeForgeShadowedScopeResource">resource override</sys:String>
     <sys:String x:Key="LOCThemeForgeShadowedScopeVariable">theme option</sys:String>
+    <sys:String x:Key="LOCThemeForgeShadowReasonDirect">the preset supplies this key</sys:String>
+    <sys:String x:Key="LOCThemeForgeShadowReasonDerived">masks the preset's {0}</sys:String>
+    <sys:String x:Key="LOCThemeForgeShadowReasonRedundant">identical to the theme default: no effect</sys:String>
     <sys:String x:Key="LOCThemeForgeClearShadowed">Clear these overrides and let the presets win</sys:String>
     <sys:String x:Key="LOCThemeForgeSettingsGeneral">Plugin behaviour</sys:String>
     <sys:String x:Key="LOCThemeForgeShowTopPanelButton">Show a button in the top panel</sys:String>

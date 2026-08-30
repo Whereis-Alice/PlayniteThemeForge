@@ -644,21 +644,41 @@ namespace ThemeForge.ViewModels
             var state = CurrentState;
             var resourceScope = Localization.Get("LOCThemeForgeShadowedScopeResource", "resource override");
             var variableScope = Localization.Get("LOCThemeForgeShadowedScopeVariable", "theme option");
-            foreach (var key in engine.ShadowedPresetKeys(selectedTheme, state))
+            foreach (var finding in engine.ShadowedPresetKeys(selectedTheme, state))
             {
-                var isResource = state.Resources != null && state.Resources.ContainsKey(key);
-                var entry = isResource ? state.Resources.Get(key) : (state.Variables == null ? null : state.Variables.Get(key));
+                var isResource = state.Resources != null && state.Resources.ContainsKey(finding.Key);
+                var entry = isResource ? state.Resources.Get(finding.Key) : (state.Variables == null ? null : state.Variables.Get(finding.Key));
                 ShadowedOverrides.Add(new ShadowedOverride
                 {
-                    Key = key,
+                    Key = finding.Key,
                     Value = entry == null ? string.Empty : entry.Value,
-                    Scope = isResource ? resourceScope : variableScope
+                    Scope = isResource ? resourceScope : variableScope,
+                    Reason = ReasonLabel(finding)
                 });
             }
 
             OnPropertyChanged("HasMissingExtensions");
             OnPropertyChanged("HasUnresolvedKeys");
             OnPropertyChanged("HasShadowedOverrides");
+        }
+
+        /// <summary>
+        /// Human readable cause for one diagnosed override. "Derived" is the interesting one:
+        /// it names the palette key the preset actually shipped, which is the piece of
+        /// information that makes an otherwise baffling result obvious.
+        /// </summary>
+        private static string ReasonLabel(ShadowFinding finding)
+        {
+            switch (finding.Reason)
+            {
+                case ShadowReason.Derived:
+                    var template = Localization.Get("LOCThemeForgeShadowReasonDerived", "masks preset key {0}");
+                    return string.Format(template, finding.ViaKey);
+                case ShadowReason.Redundant:
+                    return Localization.Get("LOCThemeForgeShadowReasonRedundant", "same as the theme default");
+                default:
+                    return Localization.Get("LOCThemeForgeShadowReasonDirect", "the preset supplies this key");
+            }
         }
 
         // ------------------------------------------------------------------ item factories
@@ -989,9 +1009,11 @@ namespace ThemeForge.ViewModels
         }
 
         /// <summary>
-        /// Drops every override that shadows a selected preset, leaving the presets themselves
-        /// untouched. This is the one-click way out of the "I picked a preset and nothing
-        /// changed" trap without resetting unrelated customizations.
+        /// Drops every listed override, leaving the presets themselves untouched. This is the
+        /// one-click way out of the "I picked a preset and nothing changed" trap without resetting
+        /// unrelated customizations. Redundant entries are cleared too: they only restate the
+        /// theme default, so removing them changes nothing visually and keeps the saved profile
+        /// from freezing a value the theme may legitimately change in a future update.
         /// </summary>
         private void ClearShadowed()
         {
@@ -1298,9 +1320,10 @@ namespace ThemeForge.ViewModels
     }
 
     /// <summary>
-    /// One override that currently sits on top of a value a selected preset also supplies.
-    /// Surfaced in the diagnostics tab because a forgotten single-key override silently
-    /// defeats every preset the user picks afterwards, which reads as "presets do nothing".
+    /// One override the diagnostics tab wants to talk about: it either replaces a key a selected
+    /// preset supplies, masks a palette key the preset supplies, or does nothing at all. Surfaced
+    /// because a forgotten single-key override silently defeats every preset the user picks
+    /// afterwards, which reads as "presets do nothing".
     /// </summary>
     public class ShadowedOverride
     {
@@ -1310,5 +1333,8 @@ namespace ThemeForge.ViewModels
 
         /// <summary>Localized scope label: individual resource override or theme variable.</summary>
         public string Scope { get; set; }
+
+        /// <summary>Localized explanation of why this override is listed.</summary>
+        public string Reason { get; set; }
     }
 }

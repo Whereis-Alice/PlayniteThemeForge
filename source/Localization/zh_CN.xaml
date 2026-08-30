@@ -61,10 +61,13 @@
     <sys:String x:Key="LOCThemeForgeMissingExtensionsHeader">该主题需要以下扩展，但它们尚未安装：</sys:String>
     <sys:String x:Key="LOCThemeForgeMissingExtensionsNone">该主题需要的扩展均已安装。</sys:String>
     <sys:String x:Key="LOCThemeForgeUnresolvedKeysHeader">该主题声明了以下选项，但运行中的窗口没有对应资源：</sys:String>
-    <sys:String x:Key="LOCThemeForgeShadowedHeader">以下自定义值压在所选预设之上，预设对这些键不会生效：</sys:String>
-    <sys:String x:Key="LOCThemeForgeShadowedHint">单键覆盖的优先级高于预设。若换了预设却看不出变化，通常就是这些遗留覆盖（常见来源是从 ThemeModifier 导入）。清除后这些键将交回预设控制，其余自定义保持不变。</sys:String>
+    <sys:String x:Key="LOCThemeForgeShadowedHeader">以下自定义值需要留意：它们要么压过所选预设，要么根本不起作用：</sys:String>
+    <sys:String x:Key="LOCThemeForgeShadowedHint">单键覆盖的优先级高于预设；覆盖某个笔刷时，同样会压过预设真正提供的调色板颜色。「换了预设却看不出变化」多半就出在这些遗留覆盖上（常见来源是从 ThemeModifier 导入），具体原因见最后一列。清除后这些键将交回预设控制，其余自定义保持不变。</sys:String>
     <sys:String x:Key="LOCThemeForgeShadowedScopeResource">资源覆盖</sys:String>
     <sys:String x:Key="LOCThemeForgeShadowedScopeVariable">主题选项</sys:String>
+    <sys:String x:Key="LOCThemeForgeShadowReasonDirect">预设直接提供了同名键</sys:String>
+    <sys:String x:Key="LOCThemeForgeShadowReasonDerived">压住了预设提供的 {0}</sys:String>
+    <sys:String x:Key="LOCThemeForgeShadowReasonRedundant">与主题默认值相同，不起作用</sys:String>
     <sys:String x:Key="LOCThemeForgeClearShadowed">清除这些覆盖，交回预设控制</sys:String>
     <sys:String x:Key="LOCThemeForgeSettingsGeneral">插件行为</sys:String>
     <sys:String x:Key="LOCThemeForgeShowTopPanelButton">在顶栏显示按钮</sys:String>

@@ -241,6 +241,25 @@ namespace Validator
                 catch (Exception ex) { E("Localize(" + lang + ") threw: " + Flatten(ex)); }
             }
 
+            // Derivation graph: this is what lets the plugin notice that overriding GlyphBrush
+            // defeats an accent preset that only ships GlyphColor. Extra command line arguments
+            // are treated as keys whose closure should be printed, which is how the behaviour is
+            // spot checked against a real theme.
+            try
+            {
+                var graph = new ResourceGraph();
+                graph.Build(root);
+                I("graph: " + graph.Count + " derived key(s)");
+                if (graph.Count == 0) W("derivation graph is empty: shadow diagnostics will only see literal key collisions");
+                for (var i = 1; i < args.Length; i++)
+                {
+                    var closure = graph.Closure(args[i]);
+                    var names = closure.OrderBy(x => x, StringComparer.OrdinalIgnoreCase).ToArray();
+                    I("closure(" + args[i] + ") = " + (names.Length == 0 ? "<none>" : string.Join(", ", names)));
+                }
+            }
+            catch (Exception ex) { E("ResourceGraph threw: " + Flatten(ex)); }
+
             Dump();
             return errors == 0 ? 0 : 1;
         }

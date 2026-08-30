@@ -534,13 +534,15 @@
                     <DataTemplate>
                       <Grid Margin="0,2">
                         <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="Auto" MinWidth="260" />
-                          <ColumnDefinition Width="Auto" MinWidth="110" />
+                          <ColumnDefinition Width="Auto" MinWidth="230" />
+                          <ColumnDefinition Width="Auto" MinWidth="100" />
+                          <ColumnDefinition Width="Auto" MinWidth="90" />
                           <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="{Binding Key}" FontFamily="Consolas" TextWrapping="Wrap" />
                         <TextBlock Grid.Column="1" Text="{Binding Value}" FontFamily="Consolas" Opacity="0.8" Margin="12,0,0,0" />
                         <TextBlock Grid.Column="2" Text="{Binding Scope}" Opacity="0.6" Margin="12,0,0,0" />
+                        <TextBlock Grid.Column="3" Text="{Binding Reason}" Opacity="0.75" TextWrapping="Wrap" Margin="12,0,0,0" />
                       </Grid>
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>

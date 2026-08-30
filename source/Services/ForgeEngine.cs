@@ -22,6 +22,7 @@ namespace ThemeForge.Services
         private readonly ThemeRepository themes;
         private readonly ResourceRegistry registry = new ResourceRegistry();
         private readonly ResourceApplier live = new ResourceApplier();
+        private readonly DictNoCase<ResourceGraph> graphs = new DictNoCase<ResourceGraph>();
         private ForgeSettings settings;
 
         public ForgeEngine(IPlayniteAPI api, ForgeSettings settings)
@@ -86,6 +87,9 @@ namespace ThemeForge.Services
         public void Reload()
         {
             themes.Refresh();
+
+            // Theme folders may have changed on disk, so the parsed derivation graphs are stale.
+            graphs.Clear();
 
             // Detaching first keeps our own overrides out of the captured baseline.
             var wasAttached = live.IsAttached;
@@ -278,25 +282,106 @@ namespace ThemeForge.Services
         }
 
         /// <summary>
-        /// Keys that a currently selected preset supplies and an individual override shadows.
+        /// Diagnoses the individual overrides saved for a theme against its selected presets.
         ///
-        /// The layering (preset &lt; variable &lt; resource override) is deliberate, but an override
-        /// the user forgot about - or one imported from a legacy plugin - silently defeats every
-        /// preset they pick afterwards, which reads as "the preset does nothing". Preset files are
-        /// inspected as well as their constants, because most colour presets ship their keys in a
-        /// xaml file rather than as inline constants.
+        /// The layering (preset &lt; variable &lt; resource override) is deliberate, but an override the
+        /// user forgot about - or one imported from a legacy plugin - silently defeats every preset
+        /// they pick afterwards, which reads as "the preset does nothing". Three situations are
+        /// reported: a preset declares the same key, a preset declares a key the override is derived
+        /// from, or the override merely restates the theme's own default.
         /// </summary>
-        public List<string> ShadowedPresetKeys(ThemeDescriptor theme, ThemeState state)
+        public List<ShadowFinding> ShadowedPresetKeys(ThemeDescriptor theme, ThemeState state)
         {
-            var result = new List<string>();
-            if (theme == null || state == null || theme.Options == null || theme.Options.Presets == null)
+            var result = new List<ShadowFinding>();
+            if (theme == null || state == null)
             {
                 return result;
             }
 
-            var presets = theme.Options.Presets;
-            var supplied = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var supplied = SuppliedPresetKeys(theme, state);
+            var graph = supplied.Count > 0 ? GraphFor(theme) : null;
 
+            // Redundancy is measured against the captured baseline, and that snapshot only
+            // describes the theme that is actually loaded. For any other theme it says nothing.
+            var active = themes.Active;
+            var judgeRedundant = active != null &&
+                string.Equals(active.Id, theme.Id, StringComparison.OrdinalIgnoreCase);
+
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var pair in state.Resources)
+            {
+                Diagnose(result, seen, supplied, graph, judgeRedundant, pair.Key, pair.Value);
+            }
+
+            foreach (var pair in state.Variables)
+            {
+                Diagnose(result, seen, supplied, graph, judgeRedundant, pair.Key, pair.Value);
+            }
+
+            result.Sort((a, b) => StringComparer.OrdinalIgnoreCase.Compare(a.Key, b.Key));
+            return result;
+        }
+
+        /// <summary>Classifies one override; the first matching reason wins.</summary>
+        private void Diagnose(List<ShadowFinding> result, HashSet<string> seen, HashSet<string> supplied,
+            ResourceGraph graph, bool judgeRedundant, string key, VariableValue entry)
+        {
+            if (string.IsNullOrEmpty(key) || !seen.Add(key))
+            {
+                return;
+            }
+
+            if (supplied.Contains(key))
+            {
+                result.Add(new ShadowFinding(key, ShadowReason.Direct, null));
+                return;
+            }
+
+            if (graph != null)
+            {
+                var via = FirstSupplied(supplied, graph.Closure(key));
+                if (via != null)
+                {
+                    result.Add(new ShadowFinding(key, ShadowReason.Derived, via));
+                    return;
+                }
+            }
+
+            if (judgeRedundant && IsRedundant(key, entry))
+            {
+                result.Add(new ShadowFinding(key, ShadowReason.Redundant, null));
+            }
+        }
+
+        /// <summary>Lowest name among the supplied keys, so the reported cause never flickers.</summary>
+        private static string FirstSupplied(HashSet<string> supplied, HashSet<string> closure)
+        {
+            string best = null;
+            foreach (var candidate in closure)
+            {
+                if (supplied.Contains(candidate) &&
+                    (best == null || StringComparer.OrdinalIgnoreCase.Compare(candidate, best) < 0))
+                {
+                    best = candidate;
+                }
+            }
+
+            return best;
+        }
+
+        /// <summary>
+        /// Keys the selected presets contribute. Preset files are inspected as well as their inline
+        /// constants, because most colour presets ship their keys in a xaml file.
+        /// </summary>
+        private static HashSet<string> SuppliedPresetKeys(ThemeDescriptor theme, ThemeState state)
+        {
+            var supplied = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            if (theme.Options == null || theme.Options.Presets == null)
+            {
+                return supplied;
+            }
+
+            var presets = theme.Options.Presets;
             var constants = presets.GetConstants(state.SelectedPresets);
             if (constants != null)
             {
@@ -320,29 +405,63 @@ namespace ThemeForge.Services
                 }
             }
 
-            if (supplied.Count == 0)
+            return supplied;
+        }
+
+        /// <summary>
+        /// Derivation graph for a theme, cached by folder. Diagnostics are rebuilt after every
+        /// value change, and re-parsing a hundred xaml files per slider tick is not acceptable.
+        /// </summary>
+        private ResourceGraph GraphFor(ThemeDescriptor theme)
+        {
+            if (theme == null || string.IsNullOrEmpty(theme.RootPath))
             {
-                return result;
+                return null;
             }
 
-            foreach (var pair in state.Resources)
+            var graph = graphs.Get(theme.RootPath);
+            if (graph == null)
             {
-                if (supplied.Contains(pair.Key))
-                {
-                    result.Add(pair.Key);
-                }
+                graph = new ResourceGraph();
+                graph.Build(theme.RootPath);
+                graphs[theme.RootPath] = graph;
             }
 
-            foreach (var pair in state.Variables)
+            return graph;
+        }
+
+        /// <summary>True when an override formats to exactly the value the theme already declares.</summary>
+        private bool IsRedundant(string key, VariableValue entry)
+        {
+            if (entry == null || string.IsNullOrEmpty(entry.Value))
             {
-                if (supplied.Contains(pair.Key) && !result.Contains(pair.Key))
-                {
-                    result.Add(pair.Key);
-                }
+                return false;
             }
 
-            result.Sort(StringComparer.OrdinalIgnoreCase);
-            return result;
+            var known = registry.Find(key);
+            if (known == null || string.IsNullOrEmpty(known.BaselineValue))
+            {
+                return false;
+            }
+
+            object parsed;
+            try
+            {
+                parsed = string.IsNullOrEmpty(entry.Type)
+                    ? ValueConverter.ParseAs(known.ValueType, entry.Value)
+                    : ValueConverter.Parse(entry.Type, entry.Value);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            if (parsed == null)
+            {
+                return false;
+            }
+
+            return string.Equals(ValueConverter.Format(parsed), known.BaselineValue, StringComparison.OrdinalIgnoreCase);
         }
 
         public void Shutdown()
