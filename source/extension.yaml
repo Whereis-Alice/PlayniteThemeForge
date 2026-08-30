@@ -1,0 +1,12 @@
+Id: ThemeForge_f0c1a7d2-3b64-4f18-9d5a-2c8e6b41a903
+Name: Theme Forge
+Author: Whereis-Alice
+Version: 1.0.0
+Module: ThemeForge.dll
+Type: GenericPlugin
+Icon: icon.png
+Links:
+  - Name: Source code
+    Url: https://github.com/Whereis-Alice/PlayniteThemeForge
+  - Name: Bug tracker
+    Url: https://github.com/Whereis-Alice/PlayniteThemeForge/issues

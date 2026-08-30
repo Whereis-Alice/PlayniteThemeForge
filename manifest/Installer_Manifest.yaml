@@ -1,0 +1,15 @@
+﻿AddonId: ThemeForge_f0c1a7d2-3b64-4f18-9d5a-2c8e6b41a903
+Packages:
+  - Version: 1.0.0
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2026-08-30
+    PackageUrl: https://github.com/Whereis-Alice/PlayniteThemeForge/releases/download/1.0.0/ThemeForge_f0c1a7d2-3b64-4f18-9d5a-2c8e6b41a903_1_0_0.pext
+    Changelog:
+      - Initial release: merges ThemeOptions and ThemeModifier into one plugin
+      - Live preview panel rendered from a second, isolated resource dictionary
+      - Live apply with no restart via a single in-place override dictionary
+      - English and Simplified Chinese UI
+      - Native themeforge.yaml schema, backwards compatible with options.yaml and thememodifier.yaml
+      - Configuration profiles plus JSON export and import
+      - One-click import of existing ThemeOptions and ThemeModifier settings
+      - Missing dependency add-on detection via extensions.yaml

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net462</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>Harness</RootNamespace>
+    <AssemblyName>Harness</AssemblyName>
+    <LangVersion>7.3</LangVersion>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <NoWarn>NU1701</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="PlayniteSDK" Version="6.12.0" />
+    <ProjectReference Include="..\..\source\ThemeForge.csproj" />
+  </ItemGroup>
+</Project>

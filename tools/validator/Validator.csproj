@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net462</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>Validator</AssemblyName>
+    <RootNamespace>Validator</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <NoWarn>NU1701;MSB3277</NoWarn>
+    <!-- Override with -p:PlayniteDir=... if Playnite lives somewhere else. -->
+    <PlayniteDir Condition="'$(PlayniteDir)' == ''">C:\Program Files\Playnite</PlayniteDir>
+    <PlayniteDir Condition="!Exists('$(PlayniteDir)\YamlDotNet.dll') And Exists('$(LOCALAPPDATA)\Playnite\YamlDotNet.dll')">$(LOCALAPPDATA)\Playnite</PlayniteDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="PlayniteSDK" Version="6.12.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ThemeForge">
+      <HintPath>..\..\source\bin\Release\ThemeForge.dll</HintPath>
+    </Reference>
+    <Reference Include="YamlDotNet">
+      <HintPath>$(PlayniteDir)\YamlDotNet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Target Name="CheckPlayniteDir" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(PlayniteDir)\YamlDotNet.dll')"
+           Text="YamlDotNet.dll not found under &apos;$(PlayniteDir)&apos;. Pass -p:PlayniteDir=&quot;X:\path\to\Playnite&quot;." />
+  </Target>
+</Project>

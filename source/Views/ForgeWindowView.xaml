@@ -1,0 +1,16 @@
+<UserControl x:Class="ThemeForge.Views.ForgeWindowView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:ThemeForge.Views">
+  <DockPanel LastChildFill="True" Margin="14">
+    <Border DockPanel.Dock="Bottom" Margin="0,12,0,0">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button x:Name="SaveButton" Content="{DynamicResource LOCSaveLabel}" MinWidth="90" Padding="12,5"
+                Margin="0,0,8,0" IsDefault="True" Click="OnSave" />
+        <Button x:Name="CancelButton" Content="{DynamicResource LOCCancelLabel}" MinWidth="90" Padding="12,5"
+                IsCancel="True" Click="OnCancel" />
+      </StackPanel>
+    </Border>
+    <views:SettingsView x:Name="Editor" />
+  </DockPanel>
+</UserControl>

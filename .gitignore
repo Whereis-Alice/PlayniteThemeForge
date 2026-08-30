@@ -1,0 +1,26 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+*.dll
+*.pdb
+*.user
+*.suo
+*.cache
+
+# IDE
+*.vs/
+.vscode/
+
+# Packaging
+dist/
+*.pext
+*.pthm
+packages/
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Local scratch
+shots/
+*.local.*
