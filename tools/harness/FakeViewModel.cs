@@ -52,6 +52,12 @@ namespace Harness
                 "SuccessStory (SuccessStory)",
                 "Bangumi Metadata (BangumiMetadata)"
             };
+            model.MissingRecommendedExtensions = new ObservableCollection<string>
+            {
+                "HowLongToBeat (HowLongToBeat)",
+                "Game Activity (GameActivity)",
+                "VNDB Metadata (VndbMetadata)"
+            };
             model.UnresolvedKeys = new ObservableCollection<string>
             {
                 "GridViewLegacySpacing",
@@ -222,12 +228,15 @@ namespace Harness
         public ObservableCollection<OptionGroupViewModel> Groups { get; set; }
         public ObservableCollection<OptionItemViewModel> Resources { get; set; }
         public ObservableCollection<string> MissingExtensions { get; set; }
+        public ObservableCollection<string> MissingRecommendedExtensions { get; set; }
         public ObservableCollection<string> UnresolvedKeys { get; set; }
         public ObservableCollection<ShadowedOverride> ShadowedOverrides { get; set; }
         public int ModifiedCount { get { return 7; } }
         public bool HasModifications { get { return true; } }
         public string ResourceSummary { get; set; }
         public bool HasMissingExtensions { get { return true; } }
+        public bool HasMissingRecommendedExtensions { get { return true; } }
+        public bool HasAnyMissingExtensions { get { return true; } }
         public bool HasUnresolvedKeys { get { return true; } }
         public bool HasShadowedOverrides { get { return true; } }
         public bool HasPresets { get { return true; } }
