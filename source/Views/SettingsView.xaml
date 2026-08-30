@@ -497,16 +497,31 @@
                   <Style TargetType="TextBlock">
                     <Setter Property="Visibility" Value="Visible" />
                     <Style.Triggers>
-                      <DataTrigger Binding="{Binding HasMissingExtensions}" Value="True">
+                      <DataTrigger Binding="{Binding HasAnyMissingExtensions}" Value="True">
                         <Setter Property="Visibility" Value="Collapsed" />
                       </DataTrigger>
                     </Style.Triggers>
                   </Style>
                 </TextBlock.Style>
               </TextBlock>
+
+              <!-- hard requirements first: without these the theme genuinely misbehaves -->
               <StackPanel Visibility="{Binding HasMissingExtensions, Converter={StaticResource BoolToVis}}">
                 <TextBlock Text="{DynamicResource LOCThemeForgeMissingExtensionsHeader}" FontWeight="Bold" TextWrapping="Wrap" />
                 <ItemsControl ItemsSource="{Binding MissingExtensions}" Margin="10,6,0,0">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <TextBlock Text="{Binding}" TextWrapping="Wrap" Margin="0,1" />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+
+              <!-- optional add-ons: their sections simply stay hidden -->
+              <StackPanel Margin="0,18,0,0" Visibility="{Binding HasMissingRecommendedExtensions, Converter={StaticResource BoolToVis}}">
+                <TextBlock Text="{DynamicResource LOCThemeForgeMissingRecommendedHeader}" FontWeight="Bold" TextWrapping="Wrap" />
+                <TextBlock Text="{DynamicResource LOCThemeForgeMissingRecommendedHint}" Opacity="0.7" TextWrapping="Wrap" Margin="0,2,0,0" />
+                <ItemsControl ItemsSource="{Binding MissingRecommendedExtensions}" Margin="10,6,0,0">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
                       <TextBlock Text="{Binding}" TextWrapping="Wrap" Margin="0,1" />

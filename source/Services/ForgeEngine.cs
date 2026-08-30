@@ -261,6 +261,16 @@ namespace ThemeForge.Services
             return themes.MissingExtensions(theme, true);
         }
 
+        /// <summary>
+        /// Add-ons the theme declares as hard requirements and that are not installed. Split out
+        /// from the full list so the UI can tell "this will break" apart from "this is optional";
+        /// most themes list far more nice-to-haves than actual requirements.
+        /// </summary>
+        public List<string> MissingRequiredExtensions(ThemeDescriptor theme)
+        {
+            return themes.MissingExtensions(theme, false);
+        }
+
         /// <summary>Keys the theme declared that nothing in the running application answers to.</summary>
         public List<string> UnresolvedKeys(ThemeDescriptor theme)
         {

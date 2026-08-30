@@ -58,8 +58,10 @@
     <sys:String x:Key="LOCThemeForgeInvalidValue">无法将取值解析为</sys:String>
     <sys:String x:Key="LOCThemeForgeModified">已修改</sys:String>
     <sys:String x:Key="LOCThemeForgeResourceCount">显示 {0} / 共 {1}</sys:String>
-    <sys:String x:Key="LOCThemeForgeMissingExtensionsHeader">该主题需要以下扩展，但它们尚未安装：</sys:String>
-    <sys:String x:Key="LOCThemeForgeMissingExtensionsNone">该主题需要的扩展均已安装。</sys:String>
+    <sys:String x:Key="LOCThemeForgeMissingExtensionsHeader">该主题必需以下扩展，但它们尚未安装：</sys:String>
+    <sys:String x:Key="LOCThemeForgeMissingExtensionsNone">没有缺失项，该主题用到的扩展全部已安装。</sys:String>
+    <sys:String x:Key="LOCThemeForgeMissingRecommendedHeader">该主题可以额外利用以下扩展，目前未安装：</sys:String>
+    <sys:String x:Key="LOCThemeForgeMissingRecommendedHint">这些都不是必需项。每个只对应一个额外区块，没装时该区块自动隐藏，不影响主题正常工作。</sys:String>
     <sys:String x:Key="LOCThemeForgeUnresolvedKeysHeader">该主题声明了以下选项，但运行中的窗口没有对应资源：</sys:String>
     <sys:String x:Key="LOCThemeForgeShadowedHeader">以下自定义值需要留意：它们要么压过所选预设，要么根本不起作用：</sys:String>
     <sys:String x:Key="LOCThemeForgeShadowedHint">单键覆盖的优先级高于预设；覆盖某个笔刷时，同样会压过预设真正提供的调色板颜色。「换了预设却看不出变化」多半就出在这些遗留覆盖上（常见来源是从 ThemeModifier 导入），具体原因见最后一列。清除后这些键将交回预设控制，其余自定义保持不变。</sys:String>

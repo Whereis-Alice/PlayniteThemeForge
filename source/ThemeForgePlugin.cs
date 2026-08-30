@@ -159,7 +159,10 @@ namespace ThemeForge
                     return;
                 }
 
-                var missing = engine.MissingExtensions(theme);
+                // Only hard requirements deserve a startup toast. Themes routinely list a dozen
+                // nice-to-have integrations, and warning about those trains the user to ignore the
+                // notification; the Extensions tab still lists them.
+                var missing = engine.MissingRequiredExtensions(theme);
                 if (missing.Count == 0)
                 {
                     return;
@@ -167,12 +170,12 @@ namespace ThemeForge
 
                 var lines = new List<string>();
                 lines.Add(theme.DisplayName);
-                lines.Add(Localization.Get("LOCThemeForgeMissingExtensionsHeader", "Missing add-ons:"));
+                lines.Add(Localization.Get("LOCThemeForgeMissingExtensionsHeader", "This theme requires these add-ons, which are not installed:"));
                 lines.AddRange(missing);
                 PlayniteApi.Notifications.Add(new NotificationMessage(
                     "ThemeForge_MissingExtensions",
                     string.Join(Environment.NewLine, lines),
-                    NotificationType.Info,
+                    NotificationType.Error,
                     () => OpenWindow()));
             }
             catch (Exception e)

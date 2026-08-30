@@ -49,6 +49,7 @@ namespace ThemeForge.ViewModels
             Resources = new ObservableCollection<OptionItemViewModel>();
             Profiles = new ObservableCollection<ThemeProfile>();
             MissingExtensions = new ObservableCollection<string>();
+            MissingRecommendedExtensions = new ObservableCollection<string>();
             UnresolvedKeys = new ObservableCollection<string>();
             ShadowedOverrides = new ObservableCollection<ShadowedOverride>();
 
@@ -89,7 +90,11 @@ namespace ThemeForge.ViewModels
         public ObservableCollection<OptionGroupViewModel> Groups { get; private set; }
         public ObservableCollection<OptionItemViewModel> Resources { get; private set; }
         public ObservableCollection<ThemeProfile> Profiles { get; private set; }
+        /// <summary>Add-ons the theme lists under Required and that are not installed.</summary>
         public ObservableCollection<string> MissingExtensions { get; private set; }
+
+        /// <summary>Add-ons the theme only recommends. Absent ones hide a section, they do not break the theme.</summary>
+        public ObservableCollection<string> MissingRecommendedExtensions { get; private set; }
         public ObservableCollection<string> UnresolvedKeys { get; private set; }
         public ObservableCollection<ShadowedOverride> ShadowedOverrides { get; private set; }
 
@@ -280,6 +285,16 @@ namespace ThemeForge.ViewModels
         public bool HasMissingExtensions
         {
             get { return MissingExtensions.Count > 0; }
+        }
+
+        public bool HasMissingRecommendedExtensions
+        {
+            get { return MissingRecommendedExtensions.Count > 0; }
+        }
+
+        public bool HasAnyMissingExtensions
+        {
+            get { return HasMissingExtensions || HasMissingRecommendedExtensions; }
         }
 
         public bool HasUnresolvedKeys
@@ -617,20 +632,32 @@ namespace ThemeForge.ViewModels
         private void BuildDiagnostics()
         {
             MissingExtensions.Clear();
+            MissingRecommendedExtensions.Clear();
             UnresolvedKeys.Clear();
             ShadowedOverrides.Clear();
 
             if (selectedTheme == null)
             {
                 OnPropertyChanged("HasMissingExtensions");
+                OnPropertyChanged("HasMissingRecommendedExtensions");
+                OnPropertyChanged("HasAnyMissingExtensions");
                 OnPropertyChanged("HasUnresolvedKeys");
                 OnPropertyChanged("HasShadowedOverrides");
                 return;
             }
 
+            var missingRequired = new HashSet<string>(engine.MissingRequiredExtensions(selectedTheme), StringComparer.OrdinalIgnoreCase);
             foreach (var id in engine.MissingExtensions(selectedTheme))
             {
-                MissingExtensions.Add(selectedTheme.Extensions == null ? id : selectedTheme.Extensions.Label(id));
+                var label = selectedTheme.Extensions == null ? id : selectedTheme.Extensions.Label(id);
+                if (missingRequired.Contains(id))
+                {
+                    MissingExtensions.Add(label);
+                }
+                else
+                {
+                    MissingRecommendedExtensions.Add(label);
+                }
             }
 
             if (IsActiveTheme)
@@ -658,6 +685,8 @@ namespace ThemeForge.ViewModels
             }
 
             OnPropertyChanged("HasMissingExtensions");
+            OnPropertyChanged("HasMissingRecommendedExtensions");
+            OnPropertyChanged("HasAnyMissingExtensions");
             OnPropertyChanged("HasUnresolvedKeys");
             OnPropertyChanged("HasShadowedOverrides");
         }

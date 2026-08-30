@@ -58,8 +58,10 @@
     <sys:String x:Key="LOCThemeForgeInvalidValue">Value cannot be interpreted as</sys:String>
     <sys:String x:Key="LOCThemeForgeModified">modified</sys:String>
     <sys:String x:Key="LOCThemeForgeResourceCount">{0} shown of {1}</sys:String>
-    <sys:String x:Key="LOCThemeForgeMissingExtensionsHeader">The theme asks for these add-ons, which are not installed:</sys:String>
-    <sys:String x:Key="LOCThemeForgeMissingExtensionsNone">Every add-on this theme asks for is installed.</sys:String>
+    <sys:String x:Key="LOCThemeForgeMissingExtensionsHeader">This theme requires these add-ons, which are not installed:</sys:String>
+    <sys:String x:Key="LOCThemeForgeMissingExtensionsNone">Nothing is missing. Every add-on this theme asks for is installed.</sys:String>
+    <sys:String x:Key="LOCThemeForgeMissingRecommendedHeader">Optional add-ons this theme can use, which are not installed:</sys:String>
+    <sys:String x:Key="LOCThemeForgeMissingRecommendedHint">These are not required. Each one only feeds an extra section, which stays hidden while the add-on is absent.</sys:String>
     <sys:String x:Key="LOCThemeForgeUnresolvedKeysHeader">The theme declares these options but nothing in the running window answers to them:</sys:String>
     <sys:String x:Key="LOCThemeForgeShadowedHeader">These customizations need a second look: they either outrank the selected presets or do nothing at all:</sys:String>
     <sys:String x:Key="LOCThemeForgeShadowedHint">A single-key override outranks a preset, and overriding a brush also outranks the palette colour the preset actually ships, so "switching presets does nothing" usually comes down to these leftovers (most often imported from ThemeModifier). The last column says which case it is. Clearing them hands the keys back to the presets and leaves the rest of your customizations alone.</sys:String>

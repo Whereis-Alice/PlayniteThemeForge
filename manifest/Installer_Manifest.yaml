@@ -1,5 +1,13 @@
 ﻿AddonId: ThemeForge_f0c1a7d2-3b64-4f18-9d5a-2c8e6b41a903
 Packages:
+  - Version: 1.3.1
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2026-08-30
+    PackageUrl: https://github.com/Whereis-Alice/PlayniteThemeForge/releases/download/1.3.1/ThemeForge_f0c1a7d2-3b64-4f18-9d5a-2c8e6b41a903_1_3_1.pext
+    Changelog:
+      - Missing add-ons are now split into required and recommended, so optional integrations are no longer reported as missing requirements
+      - The startup notification only fires for genuinely required extensions, and is raised as an error instead of an information message
+      - Reworded the diagnostics wording to explain that a missing recommended extension only hides its own optional section
   - Version: 1.3.0
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2026-08-30
