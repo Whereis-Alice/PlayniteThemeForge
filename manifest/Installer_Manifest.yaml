@@ -1,5 +1,14 @@
 ﻿AddonId: ThemeForge_f0c1a7d2-3b64-4f18-9d5a-2c8e6b41a903
 Packages:
+  - Version: 1.1.0
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2026-08-30
+    PackageUrl: https://github.com/Whereis-Alice/PlayniteThemeForge/releases/download/1.1.0/ThemeForge_f0c1a7d2-3b64-4f18-9d5a-2c8e6b41a903_1_1_0.pext
+    Changelog:
+      - Preview panel now reflects corner rounding presets on covers, buttons, search box, list and popups
+      - Preview panel gained a progress bar, a menu hover row, popup and tooltip surfaces and the play button
+      - Preview panel mock strings are now localized instead of hardcoded English
+      - Window border in the preview uses StandardWindowBorderBrush so accent changes are visible
   - Version: 1.0.0
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2026-08-30

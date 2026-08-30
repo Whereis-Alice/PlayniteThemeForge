@@ -104,6 +104,14 @@
     <sys:String x:Key="LOCThemeForgePreviewPlay">Play</sys:String>
     <sys:String x:Key="LOCThemeForgePreviewDetails">Details</sys:String>
     <sys:String x:Key="LOCThemeForgePreviewDescription">This panel is drawn with your current values so you can judge contrast and spacing before committing.</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewExpander">Expander header</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewRow1">Row one</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewRow2">Row two (hover)</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewRow3">Row three</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewMenuItem">Menu item (hover)</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewProgress">Download progress</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewPopup">Popup</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewTooltip">Tooltip</sys:String>
 
     <sys:String x:Key="LOCThemeForgeGroupCount">{0} options</sys:String>
     <sys:String x:Key="LOCThemeForgeGroupModified">{0} changed</sys:String>

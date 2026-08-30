@@ -104,6 +104,14 @@
     <sys:String x:Key="LOCThemeForgePreviewPlay">运行</sys:String>
     <sys:String x:Key="LOCThemeForgePreviewDetails">详情</sys:String>
     <sys:String x:Key="LOCThemeForgePreviewDescription">此面板使用当前取值绘制，便于在正式应用前判断对比度与间距是否合适。</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewExpander">分组标题</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewRow1">第一行</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewRow2">第二行（悬停）</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewRow3">第三行</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewMenuItem">菜单项（悬停）</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewProgress">下载进度</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewPopup">弹出层</sys:String>
+    <sys:String x:Key="LOCThemeForgePreviewTooltip">工具提示</sys:String>
 
     <sys:String x:Key="LOCThemeForgeGroupCount">共 {0} 项</sys:String>
     <sys:String x:Key="LOCThemeForgeGroupModified">{0} 项已修改</sys:String>
