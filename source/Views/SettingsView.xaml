@@ -525,6 +525,29 @@
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
               </StackPanel>
+
+              <StackPanel Margin="0,18,0,0" Visibility="{Binding HasShadowedOverrides, Converter={StaticResource BoolToVis}}">
+                <TextBlock Text="{DynamicResource LOCThemeForgeShadowedHeader}" FontWeight="Bold" TextWrapping="Wrap" />
+                <TextBlock Text="{DynamicResource LOCThemeForgeShadowedHint}" TextWrapping="Wrap" Opacity="0.75" Margin="0,4,0,0" />
+                <ItemsControl ItemsSource="{Binding ShadowedOverrides}" Margin="10,8,0,0">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="Auto" MinWidth="260" />
+                          <ColumnDefinition Width="Auto" MinWidth="110" />
+                          <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Key}" FontFamily="Consolas" TextWrapping="Wrap" />
+                        <TextBlock Grid.Column="1" Text="{Binding Value}" FontFamily="Consolas" Opacity="0.8" Margin="12,0,0,0" />
+                        <TextBlock Grid.Column="2" Text="{Binding Scope}" Opacity="0.6" Margin="12,0,0,0" />
+                      </Grid>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button Content="{DynamicResource LOCThemeForgeClearShadowed}" Command="{Binding ClearShadowedCommand}"
+                        HorizontalAlignment="Left" Margin="10,10,0,0" Padding="12,4" />
+              </StackPanel>
             </StackPanel>
           </ScrollViewer>
         </TabItem>

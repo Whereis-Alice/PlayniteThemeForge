@@ -1,5 +1,13 @@
 ﻿AddonId: ThemeForge_f0c1a7d2-3b64-4f18-9d5a-2c8e6b41a903
 Packages:
+  - Version: 1.2.0
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2026-08-30
+    PackageUrl: https://github.com/Whereis-Alice/PlayniteThemeForge/releases/download/1.2.0/ThemeForge_f0c1a7d2-3b64-4f18-9d5a-2c8e6b41a903_1_2_0.pext
+    Changelog:
+      - New diagnostics section lists individual overrides that shadow a selected preset, with a one-click button to clear them
+      - Explains the layering rule so a forgotten override no longer reads as "presets do nothing"
+      - Legacy import now skips fully transparent ThemeModifier brushes, which painted nothing while still outranking every preset
   - Version: 1.1.0
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2026-08-30

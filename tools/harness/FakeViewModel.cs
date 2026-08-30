@@ -57,6 +57,12 @@ namespace Harness
                 "GridViewLegacySpacing",
                 "DetailsViewObsoleteMargin"
             };
+            model.ShadowedOverrides = new ObservableCollection<ShadowedOverride>
+            {
+                new ShadowedOverride { Key = "GlyphBrush", Value = "#7E55AEFF", Scope = "resource override" },
+                new ShadowedOverride { Key = "TextBrushDark", Value = "#000000", Scope = "resource override" },
+                new ShadowedOverride { Key = "FontFamily", Value = "Segoe UI", Scope = "theme option" }
+            };
 
             model.ResourceSummary = "3 / 24";
             model.PluginVersion = "1.0.0";
@@ -216,11 +222,13 @@ namespace Harness
         public ObservableCollection<OptionItemViewModel> Resources { get; set; }
         public ObservableCollection<string> MissingExtensions { get; set; }
         public ObservableCollection<string> UnresolvedKeys { get; set; }
+        public ObservableCollection<ShadowedOverride> ShadowedOverrides { get; set; }
         public int ModifiedCount { get { return 7; } }
         public bool HasModifications { get { return true; } }
         public string ResourceSummary { get; set; }
         public bool HasMissingExtensions { get { return true; } }
         public bool HasUnresolvedKeys { get { return true; } }
+        public bool HasShadowedOverrides { get { return true; } }
         public bool HasPresets { get { return true; } }
         public bool HasOptions { get { return true; } }
         public bool LegacyDataAvailable { get { return true; } }

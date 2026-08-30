@@ -19,6 +19,9 @@ namespace ThemeForge.Services
     public static class LegacyMigration
     {
         /// <summary>Bump when a new import step is added; already migrated installs skip the old ones.</summary>
+        /// Deliberately still 1 even though the brush import gained a filter: bumping it would
+        /// re-run the import on installs that already migrated and re-inject overrides the user
+        /// has since cleared on purpose.
         public const int CurrentVersion = 1;
 
         public const string ThemeOptionsExtensionId = "904cbf3b-573f-48f8-9642-0a09d05c64ef";
@@ -251,6 +254,16 @@ namespace ThemeForge.Services
                     continue;
                 }
 
+                if (IsFullyTransparent(formatted))
+                {
+                    // ThemeModifier let a brush keep a colour while its opacity slider sat at 0.
+                    // Folded into a single ARGB value that becomes #00xxxxxx, which paints nothing
+                    // and, because a single-key override outranks any preset, permanently hides
+                    // whatever the theme or a preset wanted there. Importing it is never useful.
+                    report.Notes.Add("ThemeModifier: skipped fully transparent " + key);
+                    continue;
+                }
+
                 state.Resources.Set(key, "SolidColorBrush", formatted);
                 report.ThemeModifierBrushes++;
             }
@@ -284,6 +297,18 @@ namespace ThemeForge.Services
             }
 
             return ValueConverter.FormatColor(ValueConverter.ApplyOpacity(color.Value, opacity));
+        }
+
+        /// <summary>
+        /// True for an "#00RRGGBB" style value: a colour that cannot paint anything.
+        /// </summary>
+        private static bool IsFullyTransparent(string formatted)
+        {
+            return formatted != null
+                && formatted.Length == 9
+                && formatted[0] == '#'
+                && formatted[1] == '0'
+                && formatted[2] == '0';
         }
 
         private static void ImportModifierConstants(ForgeSettings settings, string json, MigrationReport report)

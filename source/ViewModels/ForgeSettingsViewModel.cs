@@ -50,6 +50,7 @@ namespace ThemeForge.ViewModels
             Profiles = new ObservableCollection<ThemeProfile>();
             MissingExtensions = new ObservableCollection<string>();
             UnresolvedKeys = new ObservableCollection<string>();
+            ShadowedOverrides = new ObservableCollection<ShadowedOverride>();
 
             ResetAllCommand = new RelayCommand(ResetAll, () => SelectedTheme != null);
             ReloadCommand = new RelayCommand(Reload);
@@ -62,6 +63,7 @@ namespace ThemeForge.ViewModels
             ClearSearchCommand = new RelayCommand(() => SearchText = null);
             ExpandAllCommand = new RelayCommand(() => SetExpanded(true));
             CollapseAllCommand = new RelayCommand(() => SetExpanded(false));
+            ClearShadowedCommand = new RelayCommand(ClearShadowed, () => ShadowedOverrides.Count > 0);
 
             Rebuild();
         }
@@ -89,6 +91,7 @@ namespace ThemeForge.ViewModels
         public ObservableCollection<ThemeProfile> Profiles { get; private set; }
         public ObservableCollection<string> MissingExtensions { get; private set; }
         public ObservableCollection<string> UnresolvedKeys { get; private set; }
+        public ObservableCollection<ShadowedOverride> ShadowedOverrides { get; private set; }
 
         public RelayCommand ResetAllCommand { get; private set; }
         public RelayCommand ReloadCommand { get; private set; }
@@ -101,6 +104,7 @@ namespace ThemeForge.ViewModels
         public RelayCommand ClearSearchCommand { get; private set; }
         public RelayCommand ExpandAllCommand { get; private set; }
         public RelayCommand CollapseAllCommand { get; private set; }
+        public RelayCommand ClearShadowedCommand { get; private set; }
 
         public ThemeDescriptor SelectedTheme
         {
@@ -281,6 +285,11 @@ namespace ThemeForge.ViewModels
         public bool HasUnresolvedKeys
         {
             get { return UnresolvedKeys.Count > 0; }
+        }
+
+        public bool HasShadowedOverrides
+        {
+            get { return ShadowedOverrides.Count > 0; }
         }
 
         public bool HasPresets
@@ -609,11 +618,13 @@ namespace ThemeForge.ViewModels
         {
             MissingExtensions.Clear();
             UnresolvedKeys.Clear();
+            ShadowedOverrides.Clear();
 
             if (selectedTheme == null)
             {
                 OnPropertyChanged("HasMissingExtensions");
                 OnPropertyChanged("HasUnresolvedKeys");
+                OnPropertyChanged("HasShadowedOverrides");
                 return;
             }
 
@@ -630,8 +641,24 @@ namespace ThemeForge.ViewModels
                 }
             }
 
+            var state = CurrentState;
+            var resourceScope = Localization.Get("LOCThemeForgeShadowedScopeResource", "resource override");
+            var variableScope = Localization.Get("LOCThemeForgeShadowedScopeVariable", "theme option");
+            foreach (var key in engine.ShadowedPresetKeys(selectedTheme, state))
+            {
+                var isResource = state.Resources != null && state.Resources.ContainsKey(key);
+                var entry = isResource ? state.Resources.Get(key) : (state.Variables == null ? null : state.Variables.Get(key));
+                ShadowedOverrides.Add(new ShadowedOverride
+                {
+                    Key = key,
+                    Value = entry == null ? string.Empty : entry.Value,
+                    Scope = isResource ? resourceScope : variableScope
+                });
+            }
+
             OnPropertyChanged("HasMissingExtensions");
             OnPropertyChanged("HasUnresolvedKeys");
+            OnPropertyChanged("HasShadowedOverrides");
         }
 
         // ------------------------------------------------------------------ item factories
@@ -961,6 +988,35 @@ namespace ThemeForge.ViewModels
             Rebuild();
         }
 
+        /// <summary>
+        /// Drops every override that shadows a selected preset, leaving the presets themselves
+        /// untouched. This is the one-click way out of the "I picked a preset and nothing
+        /// changed" trap without resetting unrelated customizations.
+        /// </summary>
+        private void ClearShadowed()
+        {
+            if (selectedTheme == null || ShadowedOverrides.Count == 0)
+            {
+                return;
+            }
+
+            var state = CurrentState;
+            foreach (var item in ShadowedOverrides.ToList())
+            {
+                if (state.Resources != null)
+                {
+                    state.Resources.Remove(item.Key);
+                }
+
+                if (state.Variables != null)
+                {
+                    state.Variables.Remove(item.Key);
+                }
+            }
+
+            Rebuild();
+        }
+
         private void Reload()
         {
             engine.Reload();
@@ -1239,5 +1295,20 @@ namespace ThemeForge.ViewModels
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// One override that currently sits on top of a value a selected preset also supplies.
+    /// Surfaced in the diagnostics tab because a forgotten single-key override silently
+    /// defeats every preset the user picks afterwards, which reads as "presets do nothing".
+    /// </summary>
+    public class ShadowedOverride
+    {
+        public string Key { get; set; }
+
+        public string Value { get; set; }
+
+        /// <summary>Localized scope label: individual resource override or theme variable.</summary>
+        public string Scope { get; set; }
     }
 }

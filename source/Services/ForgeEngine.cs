@@ -277,6 +277,74 @@ namespace ThemeForge.Services
             return missing;
         }
 
+        /// <summary>
+        /// Keys that a currently selected preset supplies and an individual override shadows.
+        ///
+        /// The layering (preset &lt; variable &lt; resource override) is deliberate, but an override
+        /// the user forgot about - or one imported from a legacy plugin - silently defeats every
+        /// preset they pick afterwards, which reads as "the preset does nothing". Preset files are
+        /// inspected as well as their constants, because most colour presets ship their keys in a
+        /// xaml file rather than as inline constants.
+        /// </summary>
+        public List<string> ShadowedPresetKeys(ThemeDescriptor theme, ThemeState state)
+        {
+            var result = new List<string>();
+            if (theme == null || state == null || theme.Options == null || theme.Options.Presets == null)
+            {
+                return result;
+            }
+
+            var presets = theme.Options.Presets;
+            var supplied = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            var constants = presets.GetConstants(state.SelectedPresets);
+            if (constants != null)
+            {
+                foreach (var pair in constants)
+                {
+                    supplied.Add(pair.Key);
+                }
+            }
+
+            foreach (var file in presets.GetResourceFiles(state.SelectedPresets))
+            {
+                var dictionary = ResourceApplier.LoadXamlFile(theme.RootPath, file);
+                if (dictionary == null)
+                {
+                    continue;
+                }
+
+                foreach (var key in dictionary.Keys.OfType<string>())
+                {
+                    supplied.Add(key);
+                }
+            }
+
+            if (supplied.Count == 0)
+            {
+                return result;
+            }
+
+            foreach (var pair in state.Resources)
+            {
+                if (supplied.Contains(pair.Key))
+                {
+                    result.Add(pair.Key);
+                }
+            }
+
+            foreach (var pair in state.Variables)
+            {
+                if (supplied.Contains(pair.Key) && !result.Contains(pair.Key))
+                {
+                    result.Add(pair.Key);
+                }
+            }
+
+            result.Sort(StringComparer.OrdinalIgnoreCase);
+            return result;
+        }
+
         public void Shutdown()
         {
             live.Detach();
