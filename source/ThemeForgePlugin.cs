@@ -193,7 +193,7 @@ namespace ThemeForge
 
             var item = new TopPanelItem();
             item.Title = Localization.Get("LOCThemeForgeName", "Theme Forge");
-            // Material design "palette" glyph, part of the font Playnite ships with.
+            // IcoFont "beaker" glyph, part of the icon font Playnite ships with.
             item.Icon = new TextBlock
             {
                 Text = char.ConvertFromUtf32(0xeeb5),
